@@ -1,0 +1,3115 @@
+-- ----------------------------------------------------------------------------
+-- MySQL Workbench Migration
+-- Migrated Schemata: csdb
+-- Source Schemata: csdb
+-- Created: Sat Nov 01 13:59:20 2014
+-- ----------------------------------------------------------------------------
+
+SET FOREIGN_KEY_CHECKS = 0;;
+
+-- ----------------------------------------------------------------------------
+-- Schema csdb
+-- ----------------------------------------------------------------------------
+DROP SCHEMA IF EXISTS `csdb` ;
+CREATE SCHEMA IF NOT EXISTS `csdb` ;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_access_restriction
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_access_restriction` (
+  `item_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `value` VARCHAR(66) NOT NULL DEFAULT '',
+  `ip_from` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_to` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(3) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `expires` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`item_id`),
+  INDEX `type` (`type` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_access_restriction_block
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_access_restriction_block` (
+  `ip` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `tries` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `expires` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ip`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_access_restriction_reason_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_access_restriction_reason_descriptions` (
+  `item_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `type` CHAR(3) NOT NULL DEFAULT '',
+  `reason` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`item_id`, `type`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_addon_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_addon_descriptions` (
+  `addon` VARCHAR(32) NOT NULL DEFAULT '',
+  `name` VARCHAR(255) NOT NULL DEFAULT '',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`addon`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_addons
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_addons` (
+  `addon` VARCHAR(32) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `version` VARCHAR(16) NOT NULL DEFAULT '',
+  `priority` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `dependencies` VARCHAR(255) NOT NULL DEFAULT '',
+  `conflicts` VARCHAR(255) NOT NULL DEFAULT '',
+  `separate` TINYINT(1) NOT NULL,
+  `unmanaged` TINYINT(1) NOT NULL,
+  `has_icon` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`addon`),
+  INDEX `priority` (`priority` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_also_bought_products
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_also_bought_products` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `related_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`product_id`, `related_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_attachment_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_attachment_descriptions` (
+  `attachment_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`attachment_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_attachments
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_attachments` (
+  `attachment_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_type` VARCHAR(30) NOT NULL DEFAULT '',
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  `position` INT(11) NOT NULL DEFAULT '0',
+  `filename` VARCHAR(100) NOT NULL DEFAULT '',
+  `filesize` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`attachment_id`),
+  INDEX `object_type` (`object_type` ASC, `object_id` ASC),
+  INDEX `type` (`type` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_banner_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_banner_descriptions` (
+  `banner_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `banner` VARCHAR(255) NOT NULL DEFAULT '',
+  `url` VARCHAR(255) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`banner_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_banner_images
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_banner_images` (
+  `banner_image_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `banner_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`banner_image_id`),
+  UNIQUE INDEX `banner` (`banner_id` ASC, `lang_code` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 10
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_banners
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_banners` (
+  `banner_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `type` CHAR(1) NOT NULL DEFAULT 'G',
+  `target` CHAR(1) NOT NULL DEFAULT 'B',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`banner_id`),
+  INDEX `localization` (`localization` ASC),
+  INDEX `status` (`status` ASC),
+  INDEX `company_id` (`company_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_block_statuses
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_block_statuses` (
+  `snapping_id` INT(11) NOT NULL,
+  `object_ids` TEXT NOT NULL,
+  `object_type` VARCHAR(32) NOT NULL,
+  UNIQUE INDEX `snapping_id` (`snapping_id` ASC, `object_type` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_blocks
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_blocks` (
+  `block_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `type` VARCHAR(64) NOT NULL DEFAULT '',
+  `properties` TEXT NOT NULL,
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`block_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 35
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_blocks_content
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_blocks_content` (
+  `snapping_id` INT(11) UNSIGNED NOT NULL,
+  `object_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `object_type` VARCHAR(64) NOT NULL DEFAULT '',
+  `block_id` INT(11) UNSIGNED NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `content` TEXT NOT NULL,
+  PRIMARY KEY (`block_id`, `snapping_id`, `lang_code`, `object_id`, `object_type`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_blocks_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_blocks_descriptions` (
+  `block_id` INT(11) UNSIGNED NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`block_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_containers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_containers` (
+  `container_id` MEDIUMINT(9) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `location_id` MEDIUMINT(9) UNSIGNED NOT NULL,
+  `position` ENUM('TOP_PANEL','HEADER','CONTENT','FOOTER') NOT NULL,
+  `width` TINYINT(4) NOT NULL,
+  `user_class` VARCHAR(128) NOT NULL DEFAULT '',
+  `status` VARCHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`container_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 133
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_grids
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_grids` (
+  `grid_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `container_id` MEDIUMINT(9) UNSIGNED NOT NULL,
+  `parent_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `order` MEDIUMINT(9) UNSIGNED NOT NULL DEFAULT '0',
+  `width` TINYINT(4) UNSIGNED NOT NULL DEFAULT '1',
+  `offset` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+  `user_class` VARCHAR(128) NOT NULL DEFAULT '',
+  `omega` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `alpha` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `wrapper` VARCHAR(128) NOT NULL DEFAULT '',
+  `content_align` ENUM('LEFT','RIGHT','FULL_WIDTH') NOT NULL DEFAULT 'FULL_WIDTH',
+  `html_element` VARCHAR(8) NOT NULL DEFAULT 'div',
+  `clear` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `status` VARCHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`grid_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 107
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_layouts
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_layouts` (
+  `layout_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(64) NOT NULL DEFAULT '',
+  `is_default` TINYINT(4) NOT NULL DEFAULT '0',
+  `width` TINYINT(4) NOT NULL DEFAULT '16',
+  `layout_width` ENUM('fixed','fluid','full_width') NOT NULL DEFAULT 'fixed',
+  `min_width` INT(11) UNSIGNED NOT NULL DEFAULT '760',
+  `max_width` INT(11) UNSIGNED NOT NULL DEFAULT '960',
+  `theme_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `style_id` VARCHAR(64) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`layout_id`),
+  INDEX `is_default` (`is_default` ASC, `company_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_locations
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_locations` (
+  `location_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dispatch` VARCHAR(64) NOT NULL,
+  `is_default` TINYINT(1) NOT NULL,
+  `layout_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  `object_ids` TEXT NOT NULL,
+  `custom_html` TEXT NOT NULL,
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`location_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 34
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_locations_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_locations_descriptions` (
+  `location_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(64) NOT NULL,
+  `title` TEXT NOT NULL,
+  `meta_description` TEXT NOT NULL,
+  `meta_keywords` TEXT NOT NULL,
+  PRIMARY KEY (`location_id`, `lang_code`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 34
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_bm_snapping
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_bm_snapping` (
+  `snapping_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_id` INT(11) UNSIGNED NOT NULL,
+  `grid_id` INT(11) UNSIGNED NOT NULL,
+  `wrapper` VARCHAR(128) NOT NULL DEFAULT '',
+  `user_class` VARCHAR(128) NOT NULL DEFAULT '',
+  `order` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `status` VARCHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`snapping_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 106
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_buy_together
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_buy_together` (
+  `chain_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `products` TEXT NULL DEFAULT NULL,
+  `modifier` DECIMAL(12,3) UNSIGNED NOT NULL DEFAULT '0.000',
+  `modifier_type` VARCHAR(20) NOT NULL DEFAULT 'by_fixed',
+  `date_from` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `date_to` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `display_in_promotions` CHAR(1) NOT NULL DEFAULT 'Y',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  PRIMARY KEY (`chain_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_buy_together_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_buy_together_descriptions` (
+  `chain_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(50) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NULL DEFAULT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`chain_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_call_requests
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_call_requests` (
+  `request_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` ENUM('new','in_progress','completed','no_answer') NOT NULL DEFAULT 'new',
+  `name` VARCHAR(250) NOT NULL DEFAULT '',
+  `phone` VARCHAR(128) NOT NULL DEFAULT '',
+  `time_from` VARCHAR(32) NOT NULL DEFAULT '',
+  `time_to` VARCHAR(32) NOT NULL DEFAULT '',
+  `notes` TEXT NOT NULL,
+  `cart_products` TEXT NOT NULL COMMENT 'Serialized data',
+  PRIMARY KEY (`request_id`),
+  INDEX `user_id` (`company_id` ASC, `user_id` ASC),
+  INDEX `timestamp` (`timestamp` ASC),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_categories
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_categories` (
+  `category_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `id_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `level` INT(11) UNSIGNED NOT NULL DEFAULT '1',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `product_count` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `is_op` CHAR(1) NOT NULL DEFAULT 'N',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `age_verification` CHAR(1) NOT NULL DEFAULT 'N',
+  `age_limit` TINYINT(4) NOT NULL DEFAULT '0',
+  `parent_age_verification` CHAR(1) NOT NULL DEFAULT 'N',
+  `parent_age_limit` TINYINT(4) NOT NULL DEFAULT '0',
+  `selected_layouts` TEXT NOT NULL,
+  `default_layout` VARCHAR(50) NOT NULL DEFAULT '',
+  `product_details_layout` VARCHAR(50) NOT NULL DEFAULT '',
+  `product_columns` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`category_id`),
+  INDEX `c_status` (`usergroup_ids` ASC, `status` ASC, `parent_id` ASC),
+  INDEX `position` (`position` ASC),
+  INDEX `parent` (`parent_id` ASC),
+  INDEX `id_path` (`id_path` ASC),
+  INDEX `localization` (`localization` ASC),
+  INDEX `age_verification` (`age_verification` ASC, `age_limit` ASC),
+  INDEX `parent_age_verification` (`parent_age_verification` ASC, `parent_age_limit` ASC),
+  INDEX `p_category_id` (`category_id` ASC, `usergroup_ids` ASC, `status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_category_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_category_descriptions` (
+  `category_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `category` VARCHAR(255) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `meta_keywords` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_description` VARCHAR(255) NOT NULL DEFAULT '',
+  `page_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `age_warning_message` TEXT NOT NULL,
+  PRIMARY KEY (`category_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_common_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_common_descriptions` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `object_type` VARCHAR(32) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `object` VARCHAR(128) NOT NULL DEFAULT '',
+  `object_holder` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`object_id`, `lang_code`, `object_holder`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_companies
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_companies` (
+  `company_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `company` VARCHAR(255) NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `address` VARCHAR(255) NOT NULL,
+  `city` VARCHAR(64) NOT NULL,
+  `state` VARCHAR(32) NOT NULL,
+  `country` CHAR(2) NOT NULL,
+  `zipcode` VARCHAR(16) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,
+  `phone` VARCHAR(32) NOT NULL,
+  `fax` VARCHAR(32) NOT NULL,
+  `url` VARCHAR(128) NOT NULL,
+  `storefront` VARCHAR(255) NOT NULL DEFAULT '',
+  `secure_storefront` VARCHAR(255) NOT NULL DEFAULT '',
+  `entry_page` VARCHAR(50) NOT NULL DEFAULT 'none',
+  `redirect_customer` CHAR(1) NOT NULL DEFAULT 'Y',
+  `countries_list` TEXT NOT NULL,
+  `timestamp` INT(11) NOT NULL,
+  `categories` TEXT NOT NULL,
+  `shippings` TEXT NOT NULL,
+  `logos` TEXT NOT NULL,
+  `commission` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `commission_type` CHAR(1) NOT NULL DEFAULT 'A',
+  `request_user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `request_account_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `request_account_data` TEXT NOT NULL,
+  PRIMARY KEY (`company_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_company_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_company_descriptions` (
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `lang_code` CHAR(2) NOT NULL,
+  `company_description` TEXT NOT NULL,
+  PRIMARY KEY (`company_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_countries
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_countries` (
+  `code` CHAR(2) NOT NULL DEFAULT '',
+  `code_A3` CHAR(3) NOT NULL DEFAULT '',
+  `code_N3` CHAR(3) NOT NULL DEFAULT '',
+  `region` CHAR(2) NOT NULL DEFAULT '',
+  `lat` FLOAT NOT NULL DEFAULT '0',
+  `lon` FLOAT NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`code`),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_country_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_country_descriptions` (
+  `code` CHAR(2) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `country` VARCHAR(128) NOT NULL DEFAULT '',
+  PRIMARY KEY (`code`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_currencies
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_currencies` (
+  `currency_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `currency_code` VARCHAR(10) NOT NULL DEFAULT '',
+  `after` CHAR(1) NOT NULL DEFAULT 'N',
+  `symbol` VARCHAR(30) NOT NULL DEFAULT '',
+  `coefficient` DOUBLE(12,5) NOT NULL DEFAULT '1.00000',
+  `is_primary` CHAR(1) NOT NULL DEFAULT 'N',
+  `position` SMALLINT(5) NOT NULL,
+  `decimals_separator` VARCHAR(6) NOT NULL DEFAULT '.',
+  `thousands_separator` VARCHAR(6) NOT NULL DEFAULT ',',
+  `decimals` SMALLINT(5) NOT NULL DEFAULT '2',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`currency_id`),
+  UNIQUE INDEX `currency_code` (`currency_code` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_currency_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_currency_descriptions` (
+  `currency_code` VARCHAR(10) NOT NULL DEFAULT '',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`currency_code`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_data_feed_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_data_feed_descriptions` (
+  `datafeed_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `datafeed_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`datafeed_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_data_feeds
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_data_feeds` (
+  `datafeed_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `categories` TEXT NOT NULL,
+  `products` TEXT NOT NULL,
+  `fields` TEXT NOT NULL,
+  `export_location` CHAR(1) NOT NULL DEFAULT 'L',
+  `export_by_cron` CHAR(1) NOT NULL DEFAULT 'N',
+  `ftp_url` VARCHAR(255) NOT NULL DEFAULT '',
+  `ftp_user` VARCHAR(50) NOT NULL DEFAULT '',
+  `ftp_pass` VARCHAR(50) NOT NULL DEFAULT '',
+  `file_name` VARCHAR(50) NOT NULL DEFAULT '',
+  `enclosure` CHAR(1) NOT NULL DEFAULT '',
+  `csv_delimiter` CHAR(1) NOT NULL DEFAULT '',
+  `exclude_disabled_products` CHAR(1) NOT NULL DEFAULT 'N',
+  `export_options` TEXT NOT NULL,
+  `save_dir` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  PRIMARY KEY (`datafeed_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_destination_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_destination_descriptions` (
+  `destination_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `destination` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`destination_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_destination_elements
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_destination_elements` (
+  `element_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `destination_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element` VARCHAR(36) NOT NULL DEFAULT '',
+  `element_type` CHAR(1) NOT NULL DEFAULT 'S',
+  PRIMARY KEY (`element_id`),
+  INDEX `c_status` (`destination_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 355
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_destinations
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_destinations` (
+  `destination_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`destination_id`),
+  INDEX `localization` (`localization` ASC),
+  INDEX `c_status` (`destination_id` ASC, `status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 9
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_discussion
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_discussion` (
+  `thread_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `object_type` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'D',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`thread_id`),
+  UNIQUE INDEX `object_id` (`object_id` ASC, `object_type` ASC, `company_id` ASC),
+  INDEX `company_id` (`company_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_discussion_messages
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_discussion_messages` (
+  `message` MEDIUMTEXT NOT NULL,
+  `post_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `thread_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`post_id`),
+  INDEX `thread_id` (`thread_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_discussion_posts
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_discussion_posts` (
+  `post_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `thread_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_address` VARCHAR(15) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  PRIMARY KEY (`post_id`),
+  INDEX `thread_id` (`thread_id` ASC, `ip_address` ASC),
+  INDEX `thread_id_2` (`thread_id` ASC, `status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_discussion_rating
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_discussion_rating` (
+  `rating_value` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+  `post_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `thread_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`post_id`),
+  INDEX `thread_id` (`thread_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ekeys
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ekeys` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `object_string` VARCHAR(128) NOT NULL DEFAULT '',
+  `object_type` CHAR(1) NOT NULL DEFAULT 'R',
+  `ekey` VARCHAR(32) NOT NULL DEFAULT '',
+  `ttl` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`object_id`, `object_type`, `ekey`),
+  UNIQUE INDEX `object_string` (`object_string` ASC, `object_type` ASC, `ekey` ASC),
+  INDEX `c_status` (`ekey` ASC, `object_type` ASC, `ttl` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_em_subscribers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_em_subscribers` (
+  `subscriber_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(128) NOT NULL DEFAULT '',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_address` VARCHAR(15) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `unsubscribe_key` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`subscriber_id`),
+  UNIQUE INDEX `email` (`email` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_exim_layouts
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_exim_layouts` (
+  `layout_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `cols` TEXT NOT NULL,
+  `options` TEXT NOT NULL,
+  `pattern_id` VARCHAR(128) NOT NULL DEFAULT '',
+  `active` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`layout_id`),
+  INDEX `pattern_id` (`pattern_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 27
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_form_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_form_descriptions` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `description` TEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`object_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_form_options
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_form_options` (
+  `element_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element_type` CHAR(1) NOT NULL DEFAULT 'I',
+  `value` VARCHAR(255) NOT NULL DEFAULT '',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `required` CHAR(1) NOT NULL DEFAULT 'N',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`element_id`),
+  INDEX `page_id` (`page_id` ASC, `status` ASC),
+  INDEX `position` (`position` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_gift_certificates
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_gift_certificates` (
+  `gift_cert_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `gift_cert_code` VARCHAR(255) NOT NULL DEFAULT '',
+  `sender` VARCHAR(64) NOT NULL DEFAULT '',
+  `recipient` VARCHAR(64) NOT NULL DEFAULT '',
+  `send_via` CHAR(1) NOT NULL DEFAULT 'E',
+  `amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `email` VARCHAR(64) NOT NULL DEFAULT '',
+  `address` VARCHAR(255) NOT NULL DEFAULT '',
+  `address_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `city` VARCHAR(255) NOT NULL DEFAULT '',
+  `state` VARCHAR(32) NOT NULL DEFAULT '',
+  `country` CHAR(2) NOT NULL DEFAULT '',
+  `zipcode` VARCHAR(10) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'P',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `order_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `template` VARCHAR(128) NOT NULL DEFAULT '',
+  `message` MEDIUMTEXT NOT NULL,
+  `products` TEXT NOT NULL,
+  PRIMARY KEY (`gift_cert_id`),
+  INDEX `status` (`status` ASC),
+  INDEX `timestamp` (`timestamp` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_gift_certificates_log
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_gift_certificates_log` (
+  `log_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `gift_cert_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `area` CHAR(1) NOT NULL DEFAULT 'C',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `debit` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `products` TEXT NOT NULL,
+  `debit_products` TEXT NOT NULL,
+  PRIMARY KEY (`log_id`),
+  INDEX `area` (`area` ASC),
+  INDEX `user_id` (`user_id` ASC),
+  INDEX `order_id` (`order_id` ASC),
+  INDEX `timestamp` (`timestamp` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_hybrid_auth_providers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_hybrid_auth_providers` (
+  `provider_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `provider` VARCHAR(32) NOT NULL,
+  `position` SMALLINT(6) NOT NULL DEFAULT '0',
+  `app_id` VARCHAR(255) NOT NULL DEFAULT '',
+  `app_secret_key` VARCHAR(255) NULL DEFAULT '',
+  `app_public_key` VARCHAR(255) NULL DEFAULT '',
+  `app_params` TEXT NOT NULL,
+  `status` CHAR(1) NULL DEFAULT 'D',
+  PRIMARY KEY (`provider_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_hybrid_auth_users
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_hybrid_auth_users` (
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `provider_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `identifier` VARCHAR(128) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`, `provider_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_images
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_images` (
+  `image_id` MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
+  `image_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `image_x` INT(5) NOT NULL DEFAULT '0',
+  `image_y` INT(5) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`image_id`),
+  INDEX `image_path` (`image_path` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 1009
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_images_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_images_links` (
+  `pair_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `object_type` VARCHAR(24) NOT NULL DEFAULT '',
+  `image_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `detailed_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'M',
+  `position` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`pair_id`),
+  INDEX `object_id` (`object_id` ASC, `object_type` ASC, `type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 188
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_language_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_language_values` (
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `value` TEXT NOT NULL,
+  PRIMARY KEY (`lang_code`, `name`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_languages
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_languages` (
+  `lang_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(64) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `country_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`lang_id`),
+  UNIQUE INDEX `lang_code` (`lang_code` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_localization_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_localization_descriptions` (
+  `localization_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  INDEX `localisation_id` (`localization_id` ASC, `lang_code` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_localization_elements
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_localization_elements` (
+  `element_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `localization_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element` VARCHAR(36) NOT NULL DEFAULT '',
+  `element_type` CHAR(1) NOT NULL DEFAULT 'S',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`element_id`),
+  INDEX `c_avail` (`localization_id` ASC),
+  INDEX `element` (`element` ASC, `element_type` ASC),
+  INDEX `position` (`position` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_localizations
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_localizations` (
+  `localization_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `custom_weight_settings` CHAR(1) NOT NULL DEFAULT 'Y',
+  `weight_symbol` VARCHAR(255) NOT NULL DEFAULT '',
+  `weight_unit` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `is_default` CHAR(1) NOT NULL DEFAULT 'N',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`localization_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_logos
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_logos` (
+  `logo_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `layout_id` INT(11) NOT NULL DEFAULT '0',
+  `company_id` INT(11) NOT NULL DEFAULT '0',
+  `type` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`logo_id`),
+  INDEX `type` (`type` ASC, `company_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_logs
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_logs` (
+  `log_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `type` VARCHAR(16) NOT NULL DEFAULT '',
+  `event_type` CHAR(1) NOT NULL DEFAULT 'N',
+  `action` VARCHAR(16) NOT NULL DEFAULT '',
+  `object` CHAR(1) NOT NULL DEFAULT '',
+  `content` TEXT NOT NULL,
+  `backtrace` TEXT NOT NULL,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`log_id`),
+  INDEX `object` (`object` ASC),
+  INDEX `type` (`type` ASC, `action` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 23
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_mailing_lists
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_mailing_lists` (
+  `list_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `from_email` VARCHAR(64) NOT NULL DEFAULT '',
+  `from_name` VARCHAR(128) NOT NULL DEFAULT '',
+  `reply_to` VARCHAR(64) NOT NULL DEFAULT '',
+  `show_on_checkout` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `show_on_registration` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  `register_autoresponder` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`list_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_menus
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_menus` (
+  `menu_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`menu_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_menus_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_menus_descriptions` (
+  `menu_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`menu_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_new_orders
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_new_orders` (
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`order_id`, `user_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_news
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_news` (
+  `news_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `separate` CHAR(1) NOT NULL DEFAULT 'N',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`news_id`),
+  INDEX `localization` (`localization` ASC),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_news_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_news_descriptions` (
+  `news_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `news` VARCHAR(128) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`news_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_newsletter_campaigns
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_newsletter_campaigns` (
+  `campaign_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  PRIMARY KEY (`campaign_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_newsletter_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_newsletter_descriptions` (
+  `newsletter_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `newsletter` VARCHAR(255) NOT NULL DEFAULT '',
+  `newsletter_multiple` TEXT NOT NULL,
+  `body_html` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`newsletter_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_newsletter_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_newsletter_links` (
+  `link_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `campaign_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `newsletter_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `url` VARCHAR(255) NOT NULL DEFAULT '',
+  `clicks` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`link_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_newsletters
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_newsletters` (
+  `newsletter_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `campaign_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `sent_date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `type` CHAR(1) NOT NULL DEFAULT 'N',
+  `mailing_lists` VARCHAR(255) NOT NULL DEFAULT '',
+  `users` TEXT NOT NULL,
+  `abandoned_type` VARCHAR(10) NOT NULL DEFAULT 'both',
+  `abandoned_days` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`newsletter_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_order_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_order_data` (
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  `data` LONGBLOB NOT NULL,
+  PRIMARY KEY (`order_id`, `type`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_order_details
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_order_details` (
+  `item_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_code` VARCHAR(32) NOT NULL DEFAULT '',
+  `price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `amount` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `extra` LONGBLOB NOT NULL,
+  PRIMARY KEY (`item_id`, `order_id`),
+  INDEX `o_k` (`order_id` ASC, `product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_order_docs
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_order_docs` (
+  `doc_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `type` CHAR(1) NOT NULL DEFAULT 'I',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`doc_id`, `type`),
+  INDEX `type` (`order_id` ASC, `type` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_order_transactions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_order_transactions` (
+  `payment_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `transaction_id` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `extra` LONGBLOB NOT NULL,
+  PRIMARY KEY (`payment_id`, `transaction_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_orders
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_orders` (
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `is_parent_order` CHAR(1) NOT NULL DEFAULT 'N',
+  `parent_order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `issuer_id` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `total` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `subtotal` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `discount` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `subtotal_discount` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `payment_surcharge` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `shipping_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `shipping_cost` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'O',
+  `notes` TEXT NOT NULL,
+  `details` TEXT NOT NULL,
+  `promotions` TEXT NOT NULL,
+  `promotion_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `firstname` VARCHAR(32) NOT NULL DEFAULT '',
+  `lastname` VARCHAR(32) NOT NULL DEFAULT '',
+  `company` VARCHAR(255) NOT NULL DEFAULT '',
+  `b_firstname` VARCHAR(128) NOT NULL DEFAULT '',
+  `b_lastname` VARCHAR(128) NOT NULL DEFAULT '',
+  `b_address` VARCHAR(255) NOT NULL DEFAULT '',
+  `b_address_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `b_city` VARCHAR(64) NOT NULL DEFAULT '',
+  `b_county` VARCHAR(32) NOT NULL DEFAULT '',
+  `b_state` VARCHAR(32) NOT NULL DEFAULT '',
+  `b_country` CHAR(2) NOT NULL DEFAULT '',
+  `b_zipcode` VARCHAR(32) NOT NULL DEFAULT '',
+  `b_phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_firstname` VARCHAR(128) NOT NULL DEFAULT '',
+  `s_lastname` VARCHAR(128) NOT NULL DEFAULT '',
+  `s_address` VARCHAR(255) NOT NULL DEFAULT '',
+  `s_address_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `s_city` VARCHAR(64) NOT NULL DEFAULT '',
+  `s_county` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_state` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_country` CHAR(2) NOT NULL DEFAULT '',
+  `s_zipcode` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_address_type` VARCHAR(32) NOT NULL DEFAULT '',
+  `phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `fax` VARCHAR(32) NOT NULL DEFAULT '',
+  `url` VARCHAR(32) NOT NULL DEFAULT '',
+  `email` VARCHAR(128) NOT NULL DEFAULT '',
+  `payment_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+  `tax_exempt` CHAR(1) NOT NULL DEFAULT 'N',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `ip_address` VARCHAR(15) NOT NULL DEFAULT '',
+  `repaid` INT(11) NOT NULL DEFAULT '0',
+  `validation_code` VARCHAR(20) NOT NULL DEFAULT '',
+  `localization_id` MEDIUMINT(8) NOT NULL,
+  `profile_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`order_id`),
+  INDEX `timestamp` (`timestamp` ASC),
+  INDEX `user_id` (`user_id` ASC),
+  INDEX `promotion_ids` (`promotion_ids` ASC),
+  INDEX `status` (`status` ASC),
+  INDEX `shipping_ids` (`shipping_ids` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_original_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_original_values` (
+  `msgctxt` VARCHAR(128) NOT NULL DEFAULT '',
+  `msgid` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`msgctxt`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_page_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_page_descriptions` (
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `page` VARCHAR(255) NULL DEFAULT '0',
+  `description` MEDIUMTEXT NULL DEFAULT NULL,
+  `meta_keywords` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_description` VARCHAR(255) NOT NULL DEFAULT '',
+  `page_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `link` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`page_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_pages
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_pages` (
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `id_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `show_in_popup` CHAR(1) NOT NULL DEFAULT 'N',
+  `page_type` CHAR(1) NOT NULL DEFAULT 'T',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) NOT NULL DEFAULT '0',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `new_window` TINYINT(3) NOT NULL DEFAULT '0',
+  `related_ids` TEXT NULL DEFAULT NULL,
+  `use_avail_period` CHAR(1) NOT NULL DEFAULT 'N',
+  `avail_from_timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `avail_till_timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `facebook_obj_type` VARCHAR(64) NOT NULL,
+  PRIMARY KEY (`page_id`),
+  INDEX `localization` (`localization` ASC),
+  INDEX `parent_id` (`parent_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_payment_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_payment_descriptions` (
+  `payment_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `payment` VARCHAR(128) NOT NULL DEFAULT '',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `instructions` MEDIUMTEXT NOT NULL,
+  `surcharge_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`payment_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_payment_processors
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_payment_processors` (
+  `processor_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `processor` VARCHAR(255) NOT NULL DEFAULT '',
+  `processor_script` VARCHAR(255) NOT NULL DEFAULT '',
+  `processor_template` VARCHAR(255) NOT NULL DEFAULT '',
+  `admin_template` VARCHAR(255) NOT NULL DEFAULT '',
+  `callback` CHAR(1) NOT NULL DEFAULT 'N',
+  `type` CHAR(1) NOT NULL DEFAULT 'P',
+  PRIMARY KEY (`processor_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 98
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_payments
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_payments` (
+  `payment_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `template` VARCHAR(128) NOT NULL DEFAULT '',
+  `processor_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `processor_params` TEXT NOT NULL,
+  `a_surcharge` DECIMAL(13,3) NOT NULL DEFAULT '0.000',
+  `p_surcharge` DECIMAL(13,3) NOT NULL DEFAULT '0.000',
+  `tax_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `payment_category` VARCHAR(20) NOT NULL DEFAULT 'tab1',
+  PRIMARY KEY (`payment_id`),
+  INDEX `c_status` (`usergroup_ids` ASC, `status` ASC),
+  INDEX `position` (`position` ASC),
+  INDEX `localization` (`localization` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 12
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_poll_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_poll_descriptions` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'P',
+  `description` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`object_id`, `lang_code`, `type`),
+  INDEX `page_id` (`page_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_poll_items
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_poll_items` (
+  `item_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'Q',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  `required` CHAR(1) NOT NULL DEFAULT '',
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`item_id`),
+  INDEX `parent_id` (`parent_id` ASC),
+  INDEX `type` (`type` ASC),
+  INDEX `page_id` (`page_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_polls
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_polls` (
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `start_date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `end_date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `show_results` CHAR(1) NOT NULL DEFAULT 'V',
+  PRIMARY KEY (`page_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_polls_answers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_polls_answers` (
+  `answer_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `vote_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `item_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `comment` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`answer_id`, `vote_id`, `item_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_polls_votes
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_polls_votes` (
+  `vote_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `page_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `ip_address` VARCHAR(15) NOT NULL DEFAULT '',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `time` INT(11) NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  PRIMARY KEY (`vote_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_privileges
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_privileges` (
+  `privilege` VARCHAR(32) NOT NULL DEFAULT '',
+  `is_default` CHAR(1) NOT NULL DEFAULT 'N',
+  `section_id` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`privilege`),
+  INDEX `section_id` (`section_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_descriptions` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `product` VARCHAR(255) NOT NULL DEFAULT '',
+  `shortname` VARCHAR(255) NOT NULL DEFAULT '',
+  `short_description` MEDIUMTEXT NOT NULL,
+  `full_description` MEDIUMTEXT NOT NULL,
+  `meta_keywords` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_description` VARCHAR(255) NOT NULL DEFAULT '',
+  `search_words` TEXT NOT NULL,
+  `page_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `age_warning_message` TEXT NOT NULL,
+  `promo_text` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`product_id`, `lang_code`),
+  INDEX `product_id` (`product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_feature_variant_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_feature_variant_descriptions` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `variant` VARCHAR(255) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `page_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_keywords` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`variant_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_feature_variants
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_feature_variants` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `url` VARCHAR(255) NOT NULL DEFAULT '',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`variant_id`),
+  INDEX `feature_id` (`feature_id` ASC),
+  INDEX `position` (`position` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_features
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_features` (
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `feature_code` VARCHAR(32) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `feature_type` CHAR(1) NOT NULL DEFAULT 'T',
+  `categories_path` TEXT NOT NULL,
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `display_on_product` CHAR(1) NOT NULL DEFAULT 'Y',
+  `display_on_catalog` CHAR(1) NOT NULL DEFAULT 'Y',
+  `display_on_header` CHAR(1) NOT NULL DEFAULT 'N',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `comparison` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`feature_id`),
+  INDEX `status` (`status` ASC),
+  INDEX `company_id` (`company_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_features_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_features_descriptions` (
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `full_description` MEDIUMTEXT NOT NULL,
+  `prefix` VARCHAR(128) NOT NULL DEFAULT '',
+  `suffix` VARCHAR(128) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`feature_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_features_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_features_values` (
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `value` VARCHAR(255) NOT NULL DEFAULT '',
+  `value_int` DOUBLE(12,2) NULL DEFAULT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`feature_id`, `product_id`, `variant_id`, `lang_code`),
+  INDEX `fl` (`feature_id` ASC, `lang_code` ASC, `variant_id` ASC, `value` ASC, `value_int` ASC),
+  INDEX `variant_id` (`variant_id` ASC),
+  INDEX `lang_code` (`lang_code` ASC),
+  INDEX `product_id` (`product_id` ASC),
+  INDEX `fpl` (`feature_id` ASC, `product_id` ASC, `lang_code` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_file_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_file_descriptions` (
+  `file_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `file_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `license` TEXT NOT NULL,
+  `readme` TEXT NOT NULL,
+  PRIMARY KEY (`file_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_file_ekeys
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_file_ekeys` (
+  `ekey` VARCHAR(32) NOT NULL DEFAULT '',
+  `file_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `downloads` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `active` CHAR(1) NOT NULL DEFAULT 'N',
+  `ttl` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`file_id`, `order_id`),
+  UNIQUE INDEX `ekey` (`ekey` ASC),
+  INDEX `ttl` (`ttl` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_file_folder_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_file_folder_descriptions` (
+  `folder_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `folder_name` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`folder_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_file_folders
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_file_folders` (
+  `folder_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`folder_id`),
+  INDEX `product_id` (`product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_files
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_files` (
+  `file_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `folder_id` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `file_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `preview_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `file_size` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `preview_size` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `agreement` CHAR(1) NOT NULL DEFAULT 'N',
+  `max_downloads` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `total_downloads` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `activation_type` CHAR(1) NOT NULL DEFAULT 'M',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`file_id`),
+  INDEX `product_id` (`product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_filter_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_filter_descriptions` (
+  `filter_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `filter` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`filter_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_filter_ranges
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_filter_ranges` (
+  `range_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `filter_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `from` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `to` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`range_id`),
+  INDEX `from` (`from` ASC, `to` ASC),
+  INDEX `filter_id` (`filter_id` ASC),
+  INDEX `feature_id` (`feature_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_filter_ranges_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_filter_ranges_descriptions` (
+  `range_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `range_name` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`range_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_filters
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_filters` (
+  `filter_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `categories_path` TEXT NOT NULL,
+  `company_id` INT(11) UNSIGNED NULL DEFAULT '0',
+  `feature_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `field_type` CHAR(1) NOT NULL DEFAULT '',
+  `show_on_home_page` CHAR(1) NOT NULL DEFAULT 'N',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `round_to` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1',
+  `display` CHAR(1) NOT NULL DEFAULT 'Y',
+  `display_count` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '10',
+  `display_more_count` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '20',
+  PRIMARY KEY (`filter_id`),
+  INDEX `feature_id` (`feature_id` ASC),
+  INDEX `company_id` (`company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_global_option_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_global_option_links` (
+  `option_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`option_id`, `product_id`),
+  INDEX `product_id` (`product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_option_variants
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_option_variants` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `option_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `modifier` DECIMAL(13,3) NOT NULL DEFAULT '0.000',
+  `modifier_type` CHAR(1) NOT NULL DEFAULT 'A',
+  `weight_modifier` DECIMAL(12,3) NOT NULL DEFAULT '0.000',
+  `weight_modifier_type` CHAR(1) NOT NULL DEFAULT 'A',
+  `point_modifier` DECIMAL(12,3) NOT NULL DEFAULT '0.000',
+  `point_modifier_type` CHAR(1) NOT NULL DEFAULT 'A',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`variant_id`),
+  INDEX `position` (`position` ASC),
+  INDEX `status` (`status` ASC),
+  INDEX `option_id` (`option_id` ASC, `status` ASC),
+  INDEX `option_id_2` (`option_id` ASC, `variant_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_option_variants_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_option_variants_descriptions` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `variant_name` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`variant_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_options
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_options` (
+  `option_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `option_type` CHAR(1) NOT NULL DEFAULT 'S',
+  `inventory` CHAR(1) NOT NULL DEFAULT 'Y',
+  `regexp` VARCHAR(255) NOT NULL DEFAULT '',
+  `required` CHAR(1) NOT NULL DEFAULT 'N',
+  `multiupload` CHAR(1) NOT NULL DEFAULT 'N',
+  `allowed_extensions` VARCHAR(255) NOT NULL DEFAULT '',
+  `max_file_size` INT(11) NOT NULL DEFAULT '0',
+  `missing_variants_handling` CHAR(1) NOT NULL DEFAULT 'M',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `value` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`option_id`),
+  INDEX `c_status` (`product_id` ASC, `status` ASC),
+  INDEX `position` (`position` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_options_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_options_descriptions` (
+  `option_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `option_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `option_text` VARCHAR(255) NOT NULL DEFAULT '',
+  `description` MEDIUMTEXT NOT NULL,
+  `comment` VARCHAR(255) NOT NULL DEFAULT '',
+  `inner_hint` VARCHAR(255) NOT NULL DEFAULT '',
+  `incorrect_message` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`option_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_options_exceptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_options_exceptions` (
+  `exception_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `combination` TEXT NOT NULL,
+  PRIMARY KEY (`exception_id`),
+  INDEX `product` (`product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_options_inventory
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_options_inventory` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_code` VARCHAR(32) NOT NULL DEFAULT '',
+  `combination_hash` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `combination` VARCHAR(255) NOT NULL DEFAULT '',
+  `amount` MEDIUMINT(8) NOT NULL DEFAULT '0',
+  `temp` CHAR(1) NOT NULL DEFAULT 'N',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`combination_hash`),
+  INDEX `pc` (`product_id` ASC, `combination` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_point_prices
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_point_prices` (
+  `point_price_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `point_price` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `lower_limit` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`point_price_id`),
+  UNIQUE INDEX `unique_key` (`lower_limit` ASC, `usergroup_id` ASC, `product_id` ASC),
+  INDEX `src_k` (`product_id` ASC, `lower_limit` ASC, `usergroup_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_popularity
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_popularity` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `viewed` INT(11) NOT NULL DEFAULT '0',
+  `added` INT(11) NOT NULL DEFAULT '0',
+  `deleted` INT(11) NOT NULL DEFAULT '0',
+  `bought` INT(11) NOT NULL DEFAULT '0',
+  `total` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`product_id`),
+  INDEX `total` (`product_id` ASC, `total` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_prices
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_prices` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `percentage_discount` INT(2) UNSIGNED NOT NULL DEFAULT '0',
+  `lower_limit` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  UNIQUE INDEX `usergroup` (`product_id` ASC, `usergroup_id` ASC, `lower_limit` ASC),
+  INDEX `product_id` (`product_id` ASC),
+  INDEX `lower_limit` (`lower_limit` ASC),
+  INDEX `usergroup_id` (`usergroup_id` ASC, `product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_required_products
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_required_products` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `required_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`product_id`, `required_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_sales
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_sales` (
+  `category_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`category_id`, `product_id`),
+  INDEX `pa` (`product_id` ASC, `amount` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_subscriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_subscriptions` (
+  `subscription_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `email` VARCHAR(128) NOT NULL DEFAULT '',
+  PRIMARY KEY (`subscription_id`),
+  UNIQUE INDEX `pe` (`product_id` ASC, `email` ASC),
+  INDEX `pd` (`product_id` ASC, `user_id` ASC, `email` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_tabs
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_tabs` (
+  `tab_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tab_type` CHAR(1) NOT NULL DEFAULT 'B',
+  `block_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `template` VARCHAR(255) NOT NULL DEFAULT '',
+  `addon` VARCHAR(32) NOT NULL DEFAULT '',
+  `position` INT(11) NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `is_primary` CHAR(1) NOT NULL DEFAULT 'N',
+  `product_ids` TEXT NOT NULL,
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  `show_in_popup` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`tab_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 9
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_product_tabs_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_product_tabs_descriptions` (
+  `tab_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`tab_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_products
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_products` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_code` VARCHAR(32) NOT NULL DEFAULT '',
+  `product_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `list_price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `amount` MEDIUMINT(8) NOT NULL DEFAULT '0',
+  `weight` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `length` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `width` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `height` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `shipping_freight` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `low_avail_limit` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `updated_timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `is_edp` CHAR(1) NOT NULL DEFAULT 'N',
+  `edp_shipping` CHAR(1) NOT NULL DEFAULT 'N',
+  `unlimited_download` CHAR(1) NOT NULL DEFAULT 'N',
+  `tracking` CHAR(1) NOT NULL DEFAULT 'B',
+  `free_shipping` CHAR(1) NOT NULL DEFAULT 'N',
+  `feature_comparison` CHAR(1) NOT NULL DEFAULT 'N',
+  `zero_price_action` CHAR(1) NOT NULL DEFAULT 'R',
+  `is_pbp` CHAR(1) NOT NULL DEFAULT 'N',
+  `is_op` CHAR(1) NOT NULL DEFAULT 'N',
+  `is_oper` CHAR(1) NOT NULL DEFAULT 'N',
+  `is_returnable` CHAR(1) NOT NULL DEFAULT 'Y',
+  `return_period` INT(11) UNSIGNED NOT NULL DEFAULT '10',
+  `avail_since` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `out_of_stock_actions` CHAR(1) NOT NULL DEFAULT 'N',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `min_qty` SMALLINT(5) NOT NULL DEFAULT '0',
+  `max_qty` SMALLINT(5) NOT NULL DEFAULT '0',
+  `qty_step` SMALLINT(5) NOT NULL DEFAULT '0',
+  `list_qty_count` SMALLINT(5) NOT NULL DEFAULT '0',
+  `tax_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `age_verification` CHAR(1) NOT NULL DEFAULT 'N',
+  `age_limit` TINYINT(4) NOT NULL DEFAULT '0',
+  `options_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `exceptions_type` CHAR(1) NOT NULL DEFAULT 'F',
+  `details_layout` VARCHAR(50) NOT NULL DEFAULT '',
+  `shipping_params` VARCHAR(255) NOT NULL DEFAULT '',
+  `buy_now_url` VARCHAR(255) NOT NULL,
+  `facebook_obj_type` VARCHAR(64) NOT NULL,
+  PRIMARY KEY (`product_id`),
+  INDEX `age_verification` (`age_verification` ASC, `age_limit` ASC),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_products_categories
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_products_categories` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `category_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `link_type` CHAR(1) NOT NULL DEFAULT 'M',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`category_id`, `product_id`),
+  INDEX `link_type` (`link_type` ASC),
+  INDEX `pt` (`product_id` ASC, `link_type` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_profile_field_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_profile_field_descriptions` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `object_type` CHAR(1) NOT NULL DEFAULT 'F',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`object_id`, `object_type`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_profile_field_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_profile_field_values` (
+  `value_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `field_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`value_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_profile_fields
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_profile_fields` (
+  `field_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `field_name` VARCHAR(32) NOT NULL DEFAULT '',
+  `profile_show` CHAR(1) NULL DEFAULT 'N',
+  `profile_required` CHAR(1) NULL DEFAULT 'N',
+  `checkout_show` CHAR(1) NULL DEFAULT 'N',
+  `checkout_required` CHAR(1) NULL DEFAULT 'N',
+  `partner_show` CHAR(1) NULL DEFAULT 'N',
+  `partner_required` CHAR(1) NULL DEFAULT 'N',
+  `field_type` CHAR(1) NOT NULL DEFAULT 'I',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `is_default` CHAR(1) NULL DEFAULT 'N',
+  `section` CHAR(1) NULL DEFAULT 'C',
+  `matching_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `class` VARCHAR(100) NOT NULL DEFAULT '',
+  `autocomplete_type` VARCHAR(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`field_id`),
+  INDEX `field_name` (`field_name` ASC),
+  INDEX `checkout_show` (`checkout_show` ASC, `field_type` ASC),
+  INDEX `profile_show` (`profile_show` ASC, `field_type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 36
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_profile_fields_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_profile_fields_data` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `object_type` CHAR(1) NOT NULL DEFAULT 'U',
+  `field_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `value` VARCHAR(255) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`object_id`, `object_type`, `field_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_promotion_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_promotion_descriptions` (
+  `promotion_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `name` VARCHAR(255) NOT NULL DEFAULT '',
+  `short_description` TEXT NOT NULL,
+  `detailed_description` MEDIUMTEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`promotion_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_promotions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_promotions` (
+  `promotion_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `conditions` TEXT NOT NULL,
+  `bonuses` TEXT NOT NULL,
+  `to_date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `from_date` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `priority` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `stop` CHAR(1) NOT NULL DEFAULT 'N',
+  `zone` ENUM('cart','catalog') NOT NULL DEFAULT 'catalog',
+  `conditions_hash` TEXT NOT NULL,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `number_of_usages` MEDIUMINT(8) NOT NULL DEFAULT '0',
+  `users_conditions_hash` TEXT NOT NULL,
+  PRIMARY KEY (`promotion_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_quick_menu
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_quick_menu` (
+  `menu_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `url` VARCHAR(255) NOT NULL,
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`menu_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 17
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_reward_point_changes
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_reward_point_changes` (
+  `change_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` INT(11) NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `action` CHAR(1) NOT NULL DEFAULT 'A',
+  `reason` TEXT NOT NULL,
+  PRIMARY KEY (`change_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_reward_points
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_reward_points` (
+  `reward_point_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `amount_type` CHAR(1) NOT NULL DEFAULT 'A',
+  `object_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`reward_point_id`),
+  UNIQUE INDEX `unique_key` (`object_id` ASC, `usergroup_id` ASC, `object_type` ASC, `company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_rma_properties
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_rma_properties` (
+  `property_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'R',
+  `update_totals_and_inventory` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`property_id`),
+  INDEX `c_status` (`property_id` ASC, `status` ASC),
+  INDEX `status` (`status` ASC, `type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 14
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_rma_property_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_rma_property_descriptions` (
+  `property_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `property` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`property_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_rma_return_products
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_rma_return_products` (
+  `return_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `item_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `reason` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'A',
+  `price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `product_options` TEXT NULL DEFAULT NULL,
+  `product` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`return_id`, `item_id`, `type`),
+  INDEX `reason` (`reason` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_rma_returns
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_rma_returns` (
+  `return_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `action` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'O',
+  `total_amount` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `comment` TEXT NULL DEFAULT NULL,
+  `extra` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`return_id`),
+  INDEX `order_id` (`order_id` ASC),
+  INDEX `timestamp` (`timestamp` ASC),
+  INDEX `user_id` (`user_id` ASC),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports` (
+  `report_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `name` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  `period` CHAR(2) NOT NULL DEFAULT 'A',
+  `time_from` INT(11) NOT NULL DEFAULT '0',
+  `time_to` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`report_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_descriptions` (
+  `report_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`report_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_elements
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_elements` (
+  `element_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(66) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'O',
+  `depend_on_it` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`element_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 15
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_intervals
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_intervals` (
+  `interval_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `value` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `interval_code` VARCHAR(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`interval_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 10
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_table_conditions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_table_conditions` (
+  `table_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `code` VARCHAR(64) NOT NULL DEFAULT '0',
+  `sub_element_id` VARCHAR(16) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`table_id`, `code`, `sub_element_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_table_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_table_descriptions` (
+  `table_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`table_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_table_element_conditions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_table_element_conditions` (
+  `table_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element_hash` VARCHAR(32) NOT NULL DEFAULT '',
+  `element_code` VARCHAR(64) NOT NULL DEFAULT '',
+  `ids` VARCHAR(16) NOT NULL DEFAULT '',
+  PRIMARY KEY (`table_id`, `element_hash`, `ids`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_table_elements
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_table_elements` (
+  `report_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `table_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `element_hash` INT(11) NOT NULL DEFAULT '0',
+  `color` VARCHAR(64) NOT NULL DEFAULT 'blueviolet',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `dependence` VARCHAR(64) NOT NULL DEFAULT 'max_p',
+  `limit_auto` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '5',
+  PRIMARY KEY (`report_id`, `table_id`, `element_hash`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sales_reports_tables
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sales_reports_tables` (
+  `table_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `report_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'T',
+  `display` VARCHAR(64) NOT NULL DEFAULT 'order_amount',
+  `interval_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `auto` CHAR(1) NOT NULL DEFAULT 'Y',
+  PRIMARY KEY (`table_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 20
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_seo_names
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_seo_names` (
+  `name` VARCHAR(250) NOT NULL DEFAULT '',
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  `dispatch` VARCHAR(64) NOT NULL DEFAULT '',
+  `path` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`object_id`, `type`, `dispatch`, `lang_code`, `company_id`),
+  INDEX `name` (`name` ASC, `lang_code` ASC),
+  INDEX `type` (`name` ASC, `type` ASC, `lang_code` ASC),
+  INDEX `dispatch` (`dispatch` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_seo_redirects
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_seo_redirects` (
+  `redirect_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `src` VARCHAR(255) NOT NULL DEFAULT '',
+  `dest` VARCHAR(255) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 's',
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`redirect_id`),
+  INDEX `src` (`src` ASC, `company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sessions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sessions` (
+  `session_id` VARCHAR(64) NOT NULL DEFAULT '',
+  `expiry` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `data` MEDIUMTEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`session_id`),
+  INDEX `src` (`session_id` ASC, `expiry` ASC),
+  INDEX `expiry` (`expiry` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_settings_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_settings_descriptions` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_type` VARCHAR(1) NOT NULL DEFAULT 'O',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `value` TEXT NOT NULL,
+  `tooltip` TEXT NOT NULL,
+  PRIMARY KEY (`object_id`, `object_type`, `lang_code`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 6149
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_settings_objects
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_settings_objects` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `edition_type` SET('NONE','ROOT','VENDOR','PRO:NONE','PRO:ROOT','MVE:NONE','MVE:ROOT','ULT:NONE','ULT:ROOT','ULT:VENDOR','ULT:VENDORONLY') NOT NULL DEFAULT 'ROOT',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `section_id` SMALLINT(4) UNSIGNED NOT NULL,
+  `section_tab_id` SMALLINT(4) UNSIGNED NOT NULL,
+  `type` CHAR(1) NOT NULL DEFAULT 'I',
+  `value` TEXT NOT NULL,
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `is_global` CHAR(1) NOT NULL DEFAULT 'Y',
+  `handler` VARCHAR(128) NOT NULL,
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`object_id`),
+  INDEX `name` (`name` ASC),
+  INDEX `is_global` (`is_global` ASC),
+  INDEX `position` (`position` ASC),
+  INDEX `section_id` (`section_id` ASC, `section_tab_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 6157
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_settings_sections
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_settings_sections` (
+  `section_id` SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` SMALLINT(4) UNSIGNED NOT NULL,
+  `edition_type` SET('NONE','ROOT','VENDOR','PRO:NONE','PRO:ROOT','MVE:NONE','MVE:ROOT','ULT:NONE','ULT:ROOT','ULT:VENDOR','ULT:VENDORONLY') NOT NULL DEFAULT 'ROOT',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `type` ENUM('CORE','ADDON','TAB','SEPARATE_TAB') NOT NULL DEFAULT 'CORE',
+  PRIMARY KEY (`section_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 94
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_settings_variants
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_settings_variants` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `name` VARCHAR(64) NOT NULL DEFAULT '',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`variant_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2198
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_settings_vendor_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_settings_vendor_values` (
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `value` TEXT NOT NULL,
+  PRIMARY KEY (`object_id`, `company_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipment_items
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipment_items` (
+  `item_id` INT(11) UNSIGNED NOT NULL,
+  `shipment_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `order_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`item_id`, `shipment_id`),
+  INDEX `shipment_id` (`shipment_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipments
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipments` (
+  `shipment_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `shipping_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `tracking_number` VARCHAR(255) NOT NULL DEFAULT '',
+  `carrier` VARCHAR(255) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `comments` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`shipment_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipping_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipping_descriptions` (
+  `shipping_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `shipping` VARCHAR(255) NOT NULL DEFAULT '',
+  `delivery_time` VARCHAR(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`shipping_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipping_rates
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipping_rates` (
+  `rate_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `shipping_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `destination_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `rate_value` TEXT NOT NULL,
+  PRIMARY KEY (`rate_id`),
+  UNIQUE INDEX `shipping_rate` (`shipping_id` ASC, `destination_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 46
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipping_service_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipping_service_descriptions` (
+  `service_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`service_id`, `lang_code`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 384
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shipping_services
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shipping_services` (
+  `service_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `module` VARCHAR(32) NOT NULL DEFAULT '',
+  `code` VARCHAR(64) NOT NULL DEFAULT '',
+  `sp_file` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`service_id`),
+  INDEX `sa` (`service_id` ASC, `status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 384
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_shippings
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_shippings` (
+  `shipping_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `destination` CHAR(1) NOT NULL DEFAULT 'I',
+  `min_weight` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `max_weight` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `usergroup_ids` VARCHAR(255) NOT NULL DEFAULT '0',
+  `rate_calculation` CHAR(1) NOT NULL DEFAULT 'M',
+  `service_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `service_params` TEXT NOT NULL,
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `tax_ids` VARCHAR(255) NOT NULL DEFAULT '',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  UNIQUE INDEX `shipping_id` (`shipping_id` ASC),
+  INDEX `position` (`position` ASC),
+  INDEX `localization` (`localization` ASC),
+  INDEX `c_status` (`usergroup_ids` ASC, `min_weight` ASC, `max_weight` ASC, `status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sitemap_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sitemap_links` (
+  `link_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `link_href` VARCHAR(255) NOT NULL DEFAULT '',
+  `section_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `link_type` VARCHAR(255) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`link_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_sitemap_sections
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_sitemap_sections` (
+  `section_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `section_type` VARCHAR(255) NOT NULL DEFAULT '1',
+  `position` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`section_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_state_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_state_descriptions` (
+  `state_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `state` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`state_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_states
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_states` (
+  `state_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `country_code` VARCHAR(2) NOT NULL DEFAULT '',
+  `code` VARCHAR(32) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`state_id`),
+  UNIQUE INDEX `cs` (`country_code` ASC, `code` ASC),
+  INDEX `code` (`code` ASC),
+  INDEX `country_code` (`country_code` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 689
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_static_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_static_data` (
+  `param_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `param` VARCHAR(255) NOT NULL DEFAULT '',
+  `param_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `param_3` VARCHAR(255) NOT NULL DEFAULT '',
+  `param_4` VARCHAR(255) NOT NULL DEFAULT '',
+  `param_5` VARCHAR(255) NOT NULL DEFAULT '',
+  `section` CHAR(1) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  `parent_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `id_path` VARCHAR(255) NOT NULL DEFAULT '',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`param_id`),
+  INDEX `section` (`section` ASC, `status` ASC, `localization` ASC),
+  INDEX `position` (`position` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 152
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_static_data_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_static_data_descriptions` (
+  `param_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `descr` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`param_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_status_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_status_data` (
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'O',
+  `param` CHAR(255) NOT NULL DEFAULT '',
+  `value` CHAR(255) NOT NULL DEFAULT 'Y',
+  PRIMARY KEY (`status`, `type`, `param`),
+  INDEX `inventory` (`value` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_status_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_status_descriptions` (
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'O',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `email_subj` VARCHAR(255) NOT NULL DEFAULT '',
+  `email_header` TEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`status`, `type`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_statuses
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_statuses` (
+  `status_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'O',
+  `is_default` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`status_id`),
+  UNIQUE INDEX `status` (`status` ASC, `type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 17
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_storage_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_storage_data` (
+  `data_key` VARCHAR(255) NOT NULL DEFAULT '',
+  `data` MEDIUMBLOB NOT NULL,
+  PRIMARY KEY (`data_key`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_store_location_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_store_location_descriptions` (
+  `store_location_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(80) NOT NULL DEFAULT '',
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `city` VARCHAR(60) NOT NULL DEFAULT '',
+  PRIMARY KEY (`store_location_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_store_locations
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_store_locations` (
+  `store_location_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `position` SMALLINT(5) NOT NULL DEFAULT '0',
+  `country` CHAR(2) NOT NULL DEFAULT '',
+  `latitude` DOUBLE NOT NULL DEFAULT '0',
+  `longitude` DOUBLE NOT NULL DEFAULT '0',
+  `localization` VARCHAR(255) NOT NULL DEFAULT '',
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`store_location_id`),
+  INDEX `status` (`status` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_stored_sessions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_stored_sessions` (
+  `session_id` VARCHAR(64) NOT NULL,
+  `expiry` INT(11) UNSIGNED NOT NULL,
+  `data` TEXT NOT NULL,
+  PRIMARY KEY (`session_id`),
+  INDEX `expiry` (`expiry` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_subscribers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_subscribers` (
+  `subscriber_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(128) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`subscriber_id`),
+  UNIQUE INDEX `email` (`email` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_tag_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_tag_links` (
+  `tag_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `object_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `object_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`object_type`, `object_id`, `user_id`, `tag_id`),
+  INDEX `tag_id` (`tag_id` ASC),
+  INDEX `user_id` (`user_id` ASC),
+  INDEX `ids` (`tag_id` ASC, `user_id` ASC, `object_type` ASC, `object_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_tags
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_tags` (
+  `tag_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `tag` VARCHAR(255) NOT NULL DEFAULT '',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` CHAR(1) NOT NULL DEFAULT 'P',
+  PRIMARY KEY (`tag_id`),
+  UNIQUE INDEX `tag` (`tag` ASC, `company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_tax_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_tax_descriptions` (
+  `tax_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `tax` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`tax_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_tax_rates
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_tax_rates` (
+  `rate_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tax_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `destination_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `rate_value` DECIMAL(13,3) NOT NULL DEFAULT '0.000',
+  `rate_type` CHAR(1) NOT NULL DEFAULT '',
+  PRIMARY KEY (`rate_id`),
+  UNIQUE INDEX `tax_rate` (`tax_id` ASC, `destination_id` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_taxes
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_taxes` (
+  `tax_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `address_type` CHAR(1) NOT NULL DEFAULT 'S',
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  `price_includes_tax` CHAR(1) NOT NULL DEFAULT 'N',
+  `display_including_tax` CHAR(1) NOT NULL DEFAULT 'N',
+  `display_info` CHAR(1) NOT NULL DEFAULT '',
+  `regnumber` VARCHAR(255) NOT NULL DEFAULT '',
+  `priority` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`tax_id`),
+  INDEX `c_status` (`status` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_twigmo_settings
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_twigmo_settings` (
+  `name` VARCHAR(255) NOT NULL,
+  `value` TEXT NOT NULL,
+  PRIMARY KEY (`name`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_twigmo_stores
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_twigmo_stores` (
+  `company_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'C' COMMENT 'May be \'A\' for admin or \'C\' for customer',
+  `access_id` CHAR(6) NOT NULL,
+  `url` VARCHAR(255) NOT NULL,
+  `home_page_content` VARCHAR(255) NOT NULL DEFAULT 'home_page_blocks',
+  `url_for_twitter` VARCHAR(255) NOT NULL,
+  `url_for_facebook` VARCHAR(255) NOT NULL,
+  `logo_url` VARCHAR(255) NOT NULL,
+  `favicon_url` VARCHAR(255) NOT NULL,
+  `url_on_appstore` VARCHAR(255) NOT NULL,
+  `url_on_googleplay` VARCHAR(255) NOT NULL,
+  `geolocation` CHAR(1) NOT NULL DEFAULT 'N',
+  `only_req_profile_fields` CHAR(1) NOT NULL DEFAULT 'N',
+  `show_product_code` CHAR(1) NOT NULL DEFAULT 'N',
+  `use_for_phones` CHAR(1) NOT NULL DEFAULT 'Y',
+  `use_for_tablets` CHAR(1) NOT NULL DEFAULT 'Y',
+  `plan_display_name` VARCHAR(255) NOT NULL,
+  `repo_revision` INT(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`company_id`, `type`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_twigmo_ua_stat
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_twigmo_ua_stat` (
+  `section` VARCHAR(50) NOT NULL,
+  `value` VARCHAR(255) NOT NULL,
+  `count` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `month` DATE NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (`section`, `value`, `month`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_language_values
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_language_values` (
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `name` VARCHAR(128) NOT NULL DEFAULT '',
+  `value` TEXT NOT NULL,
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`lang_code`, `name`, `company_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_objects_sharing
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_objects_sharing` (
+  `share_company_id` INT(11) UNSIGNED NOT NULL,
+  `share_object_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+  `share_object_type` VARCHAR(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`share_object_id`, `share_company_id`, `share_object_type`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_product_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_product_descriptions` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `product` VARCHAR(255) NOT NULL DEFAULT '',
+  `shortname` VARCHAR(255) NOT NULL DEFAULT '',
+  `short_description` MEDIUMTEXT NOT NULL,
+  `full_description` MEDIUMTEXT NOT NULL,
+  `meta_keywords` VARCHAR(255) NOT NULL DEFAULT '',
+  `meta_description` VARCHAR(255) NOT NULL DEFAULT '',
+  `search_words` TEXT NOT NULL,
+  `page_title` VARCHAR(255) NOT NULL DEFAULT '',
+  `age_warning_message` TEXT NOT NULL,
+  `promo_text` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`product_id`, `lang_code`, `company_id`),
+  INDEX `product_id` (`product_id` ASC),
+  INDEX `company_id` (`company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_product_option_variants
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_product_option_variants` (
+  `variant_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `option_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `modifier` DECIMAL(13,3) NOT NULL DEFAULT '0.000',
+  `modifier_type` CHAR(1) NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`variant_id`, `company_id`),
+  INDEX `company_id` (`company_id` ASC),
+  INDEX `option_id` (`option_id` ASC, `variant_id` ASC, `company_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_product_prices
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_product_prices` (
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `percentage_discount` INT(2) UNSIGNED NOT NULL DEFAULT '0',
+  `lower_limit` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  UNIQUE INDEX `usergroup` (`product_id` ASC, `usergroup_id` ASC, `lower_limit` ASC, `company_id` ASC),
+  INDEX `product_id` (`product_id` ASC),
+  INDEX `company_id` (`company_id` ASC),
+  INDEX `lower_limit` (`lower_limit` ASC),
+  INDEX `usergroup_id` (`usergroup_id` ASC, `product_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_ult_status_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_ult_status_descriptions` (
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'O',
+  `email_subj` VARCHAR(255) NOT NULL DEFAULT '',
+  `email_header` TEXT NOT NULL,
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`status`, `type`, `lang_code`, `company_id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_user_data
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_user_data` (
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT '',
+  `data` TEXT NOT NULL,
+  PRIMARY KEY (`user_id`, `type`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_user_mailing_lists
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_user_mailing_lists` (
+  `subscriber_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `list_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `activation_key` VARCHAR(32) NOT NULL DEFAULT '',
+  `unsubscribe_key` VARCHAR(32) NOT NULL DEFAULT '',
+  `confirmed` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  UNIQUE INDEX `subscriber_list` (`list_id` ASC, `subscriber_id` ASC),
+  INDEX `subscriber_id` (`subscriber_id` ASC),
+  INDEX `list_id` (`list_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_user_profiles
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_user_profiles` (
+  `profile_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `profile_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `b_firstname` VARCHAR(128) NOT NULL DEFAULT '',
+  `b_lastname` VARCHAR(128) NOT NULL DEFAULT '',
+  `b_address` VARCHAR(255) NOT NULL DEFAULT '',
+  `b_address_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `b_city` VARCHAR(64) NOT NULL DEFAULT '',
+  `b_county` VARCHAR(32) NOT NULL DEFAULT '',
+  `b_state` VARCHAR(32) NOT NULL DEFAULT '',
+  `b_country` CHAR(2) NOT NULL DEFAULT '',
+  `b_zipcode` VARCHAR(16) NOT NULL DEFAULT '',
+  `b_phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_firstname` VARCHAR(128) NOT NULL DEFAULT '',
+  `s_lastname` VARCHAR(128) NOT NULL DEFAULT '',
+  `s_address` VARCHAR(255) NOT NULL DEFAULT '',
+  `s_address_2` VARCHAR(255) NOT NULL DEFAULT '',
+  `s_city` VARCHAR(255) NOT NULL DEFAULT '',
+  `s_county` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_state` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_country` CHAR(2) NOT NULL DEFAULT '',
+  `s_zipcode` VARCHAR(16) NOT NULL DEFAULT '',
+  `s_phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `s_address_type` VARCHAR(255) NOT NULL DEFAULT '',
+  `profile_name` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`profile_id`),
+  INDEX `uid_p` (`user_id` ASC, `profile_type` ASC),
+  INDEX `profile_type` (`profile_type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_user_session_products
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_user_session_products` (
+  `user_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `type` CHAR(1) NOT NULL DEFAULT 'C',
+  `user_type` CHAR(1) NOT NULL DEFAULT 'R',
+  `item_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `item_type` CHAR(1) NOT NULL DEFAULT 'P',
+  `product_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `amount` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '1',
+  `price` DECIMAL(12,2) NOT NULL DEFAULT '0.00',
+  `extra` TEXT NOT NULL,
+  `session_id` VARCHAR(64) NOT NULL DEFAULT '',
+  `ip_address` VARCHAR(15) NOT NULL DEFAULT '',
+  `company_id` INT(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`user_id`, `type`, `user_type`, `item_id`, `company_id`),
+  INDEX `timestamp` (`timestamp` ASC, `user_type` ASC),
+  INDEX `session_id` (`session_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_usergroup_descriptions
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_usergroup_descriptions` (
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `usergroup` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`usergroup_id`, `lang_code`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_usergroup_links
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_usergroup_links` (
+  `link_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `status` CHAR(1) NOT NULL DEFAULT 'D',
+  PRIMARY KEY (`link_id`),
+  UNIQUE INDEX `user_id` (`user_id` ASC, `usergroup_id` ASC))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_usergroup_privileges
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_usergroup_privileges` (
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `privilege` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`usergroup_id`, `privilege`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_usergroups
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_usergroups` (
+  `usergroup_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT '',
+  `type` CHAR(1) NOT NULL DEFAULT 'C',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`usergroup_id`),
+  INDEX `c_status` (`usergroup_id` ASC, `status` ASC),
+  INDEX `status` (`status` ASC, `type` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_users
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_users` (
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` CHAR(1) NOT NULL DEFAULT 'A',
+  `user_type` CHAR(1) NOT NULL DEFAULT 'C',
+  `user_login` VARCHAR(255) NOT NULL DEFAULT '',
+  `referer` VARCHAR(255) NOT NULL DEFAULT '',
+  `is_root` CHAR(1) NOT NULL DEFAULT 'N',
+  `company_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `last_login` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `password` VARCHAR(32) NOT NULL DEFAULT '',
+  `salt` VARCHAR(10) NOT NULL DEFAULT '',
+  `firstname` VARCHAR(128) NOT NULL DEFAULT '',
+  `lastname` VARCHAR(128) NOT NULL DEFAULT '',
+  `company` VARCHAR(255) NOT NULL DEFAULT '',
+  `email` VARCHAR(128) NOT NULL DEFAULT '',
+  `phone` VARCHAR(32) NOT NULL DEFAULT '',
+  `fax` VARCHAR(32) NOT NULL DEFAULT '',
+  `url` VARCHAR(128) NOT NULL DEFAULT '',
+  `tax_exempt` CHAR(1) NOT NULL DEFAULT 'N',
+  `lang_code` CHAR(2) NOT NULL DEFAULT '',
+  `birthday` INT(11) NOT NULL,
+  `purchase_timestamp_from` INT(11) NOT NULL DEFAULT '0',
+  `purchase_timestamp_to` INT(11) NOT NULL DEFAULT '0',
+  `responsible_email` VARCHAR(80) NOT NULL DEFAULT '',
+  `last_passwords` VARCHAR(255) NOT NULL DEFAULT '',
+  `password_change_timestamp` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `api_key` VARCHAR(32) NOT NULL DEFAULT '',
+  `janrain_identifier` VARCHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`user_id`),
+  INDEX `user_login` (`user_login` ASC),
+  INDEX `uname` (`firstname` ASC, `lastname` ASC))
+ENGINE = MyISAM
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+-- ----------------------------------------------------------------------------
+-- Table csdb.cscart_views
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `csdb`.`cscart_views` (
+  `view_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object` VARCHAR(24) NOT NULL DEFAULT '',
+  `name` VARCHAR(32) NOT NULL DEFAULT '',
+  `params` TEXT NOT NULL,
+  `view_results` TEXT NOT NULL,
+  `user_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `active` CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`view_id`))
+ENGINE = MyISAM
+AUTO_INCREMENT = 21
+DEFAULT CHARACTER SET = utf8;
+SET FOREIGN_KEY_CHECKS = 1;;
